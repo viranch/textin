@@ -46,7 +46,12 @@ void TextIn::login()
 
 void TextIn::setEnabled(bool enabled)
 {
-    ui->centralWidget->setEnabled(enabled);
+    ui->label->setEnabled(enabled);
+    ui->label_2->setEnabled(enabled);
+    ui->recvEdit->setEnabled(enabled);
+    ui->textEdit->setEnabled(enabled);
+    ui->buttonBox->button(QDialogButtonBox::Reset)->setEnabled(enabled);
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(enabled);
 }
 
 void TextIn::on_actionSettings_triggered()
@@ -76,7 +81,8 @@ void TextIn::sendDone()
         setEnabled(true);
         ui->buttonBox->button(QDialogButtonBox::Cancel)->hide();
         ui->buttonBox->button(QDialogButtonBox::Close)->show();
-        ui->statusBar->showMessage("Sent");
+        if (m_curr == m_receivers.size())
+            ui->statusBar->showMessage("Sent");
     }
 }
 
@@ -103,4 +109,15 @@ void TextIn::on_buttonBox_accepted()
     m_bar->setMaximum(m_receivers.size());
     m_bar->setValue(m_curr);
     m_talker->sendText(m_receivers[m_curr], ui->textEdit->toPlainText());
+}
+
+void TextIn::on_buttonBox_rejected()
+{
+    if (ui->buttonBox->button(QDialogButtonBox::Close)->isVisible()) {
+        close();
+    } else if (m_curr != m_receivers.size()-1) {
+        m_curr = m_receivers.size();
+        m_bar->hide();
+        ui->statusBar->showMessage("Cancelled. Click 'Send' to resume.");
+    }
 }

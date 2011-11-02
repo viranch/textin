@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>399</width>
-    <height>258</height>
+    <height>299</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <item>
      <widget class="QLabel" name="label_2">
       <property name="toolTip">
-       <string>Enter receiver(s) in the input box. For multiple receivers, separate each receiver with a comma.</string>
+       <string/>
       </property>
       <property name="text">
        <string>Receiver(s):</string>
@@ -26,7 +26,11 @@
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="recvEdit"/>
+     <widget class="QLineEdit" name="recvEdit">
+      <property name="toolTip">
+       <string>Enter receiver(s) in the input box. For multiple receivers, separate them with a comma.</string>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QLabel" name="label">
@@ -37,6 +41,19 @@
     </item>
     <item>
      <widget class="QTextEdit" name="textEdit"/>
+    </item>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
     </item>
     <item>
      <widget class="QDialogButtonBox" name="buttonBox">
