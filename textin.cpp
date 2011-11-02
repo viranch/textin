@@ -3,6 +3,8 @@
 #include "textin.h"
 #include "ui_textin.h"
 
+#define MAX_LEN 160
+
 TextIn::TextIn(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::TextIn)
@@ -10,6 +12,7 @@ TextIn::TextIn(QWidget *parent) :
     ui->setupUi(this);
     ui->buttonBox->button(QDialogButtonBox::Cancel)->hide();
     ui->buttonBox->button(QDialogButtonBox::Ok)->setText("Send");
+    ui->lenLabel->setText("0/"+QString::number(MAX_LEN));
     m_bar = new QProgressBar(this);
     m_bar->hide();
     ui->statusBar->addPermanentWidget(m_bar);
@@ -48,6 +51,7 @@ void TextIn::setEnabled(bool enabled)
 {
     ui->label->setEnabled(enabled);
     ui->label_2->setEnabled(enabled);
+    ui->lenLabel->setEnabled(enabled);
     ui->recvEdit->setEnabled(enabled);
     ui->textEdit->setEnabled(enabled);
     ui->buttonBox->button(QDialogButtonBox::Reset)->setEnabled(enabled);
@@ -56,8 +60,10 @@ void TextIn::setEnabled(bool enabled)
 
 void TextIn::on_actionSettings_triggered()
 {
-    if (m_settingsDlg->exec())
+    if (m_settingsDlg->exec()) {
+        m_talker->setStatus(false);
         login();
+    }
 }
 
 void TextIn::loginDone(bool success)
@@ -121,4 +127,15 @@ void TextIn::on_buttonBox_rejected()
         m_bar->hide();
         ui->statusBar->showMessage("Cancelled.");
     }
+}
+
+void TextIn::on_textEdit_textChanged()
+{
+    QString text = ui->textEdit->toPlainText();
+    if (text.length() > MAX_LEN) {
+        text = text.left(MAX_LEN);
+        ui->textEdit->setPlainText(text);
+        ui->textEdit->moveCursor(QTextCursor::End);
+    }
+    ui->lenLabel->setText(QString::number(text.length())+"/"+QString::number(MAX_LEN));
 }

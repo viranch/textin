@@ -25,6 +25,8 @@ private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
 
+    void on_textEdit_textChanged();
+
 private:
     Ui::TextIn *ui;
     SettingsDialog *m_settingsDlg;

@@ -11,6 +11,7 @@ public:
     explicit Talker(QObject *parent = 0);
     void login(QString username, QString password);
     void sendText(QString recvr, QString text);
+    inline void setStatus(bool st) { m_status = st; }
     inline bool status() { return m_status; }
 
 signals:
