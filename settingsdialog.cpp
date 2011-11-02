@@ -9,6 +9,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    QSettings s;
+    ui->numEdit->setText(s.value("phone", "").toString());
+
     connect(this, SIGNAL(accepted()),
             this, SLOT(saveSettings()));
 }

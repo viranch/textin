@@ -68,6 +68,7 @@ void TextIn::loginDone(bool success)
     }
     else {
         setEnabled(true);
+        ui->recvEdit->setFocus();
         ui->statusBar->showMessage("Ready.");
     }
 }
@@ -118,6 +119,6 @@ void TextIn::on_buttonBox_rejected()
     } else if (m_curr != m_receivers.size()-1) {
         m_curr = m_receivers.size();
         m_bar->hide();
-        ui->statusBar->showMessage("Cancelled. Click 'Send' to resume.");
+        ui->statusBar->showMessage("Cancelled.");
     }
 }

@@ -17,8 +17,6 @@ signals:
 public slots:
     void readReply(QNetworkReply*);
 
-private:
-    int m_id;
 };
 
 #endif // NETWORK_H

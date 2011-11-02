@@ -6,7 +6,6 @@
 Network::Network(QObject *parent) :
     QNetworkAccessManager(parent)
 {
-    m_id = 0;
     connect(this, SIGNAL(finished(QNetworkReply*)), this, SLOT(readReply(QNetworkReply*)));
 }
 

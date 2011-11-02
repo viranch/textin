@@ -24,6 +24,10 @@ HEADERS  += textin.h \
 FORMS    += textin.ui \
     settingsdialog.ui
 
+RESOURCES += \
+    icons.qrc
+
+
 
 
 
