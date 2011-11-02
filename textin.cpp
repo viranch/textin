@@ -1,4 +1,5 @@
 #include <QSettings>
+#include <QPushButton>
 #include "textin.h"
 #include "ui_textin.h"
 
@@ -7,6 +8,11 @@ TextIn::TextIn(QWidget *parent) :
     ui(new Ui::TextIn)
 {
     ui->setupUi(this);
+    ui->buttonBox->button(QDialogButtonBox::Cancel)->hide();
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setText("Send");
+    m_bar = new QProgressBar(this);
+    m_bar->hide();
+    ui->statusBar->addPermanentWidget(m_bar);
 
     m_settingsDlg = new SettingsDialog(this);
     firstrun();
@@ -40,8 +46,7 @@ void TextIn::login()
 
 void TextIn::setEnabled(bool enabled)
 {
-    ui->textEdit->setEnabled(enabled);
-    ui->sendButton->setEnabled(enabled);
+    ui->centralWidget->setEnabled(enabled);
 }
 
 void TextIn::on_actionSettings_triggered()
@@ -64,11 +69,38 @@ void TextIn::loginDone(bool success)
 
 void TextIn::sendDone()
 {
-    ui->statusBar->showMessage("Sent");
+    m_bar->setValue(++m_curr);
+    if (m_curr < m_receivers.size()) {
+        m_talker->sendText(m_receivers[m_curr], ui->textEdit->toPlainText());
+    } else {
+        setEnabled(true);
+        ui->buttonBox->button(QDialogButtonBox::Cancel)->hide();
+        ui->buttonBox->button(QDialogButtonBox::Close)->show();
+        ui->statusBar->showMessage("Sent");
+    }
 }
 
-void TextIn::on_sendButton_clicked()
+void TextIn::on_buttonBox_accepted()
 {
+    m_curr = 0;
+    m_receivers.clear();
+    m_receivers << ui->recvEdit->text().trimmed().split(',', QString::SkipEmptyParts);
+
+    if (m_receivers.size() == 0) {
+        return;
+    }
+
+    setEnabled(false);
+    ui->buttonBox->button(QDialogButtonBox::Close)->hide();
+    ui->buttonBox->button(QDialogButtonBox::Cancel)->show();
+
+    for (int i=0; i<m_receivers.size(); i++) {
+        m_receivers[i] = m_receivers.at(i).trimmed();
+    }
     ui->statusBar->showMessage("Sending...");
-    m_talker->sendText(ui->recvEdit->text().trimmed(), ui->textEdit->toPlainText());
+    m_bar->show();
+
+    m_bar->setMaximum(m_receivers.size());
+    m_bar->setValue(m_curr);
+    m_talker->sendText(m_receivers[m_curr], ui->textEdit->toPlainText());
 }

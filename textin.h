@@ -2,6 +2,7 @@
 #define TEXTIN_H
 
 #include <QMainWindow>
+#include <QProgressBar>
 #include "settingsdialog.h"
 #include "talker.h"
 
@@ -21,12 +22,15 @@ private slots:
     void on_actionSettings_triggered();
     void loginDone(bool);
     void sendDone();
-    void on_sendButton_clicked();
+    void on_buttonBox_accepted();
 
 private:
     Ui::TextIn *ui;
     SettingsDialog *m_settingsDlg;
     Talker *m_talker;
+    QProgressBar *m_bar;
+    QStringList m_receivers;
+    int m_curr;
 
     void firstrun();
     void login();
