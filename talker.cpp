@@ -29,7 +29,7 @@ void Talker::sendText(QString recvr, QString text)
 void Talker::readReply(QString data)
 {
     if (!status()) {
-        m_status = !data.contains("Invalid Mobile No/Password .. Please try again");
+        m_status = data.contains("logout");
         emit loginFinished(status());
     }
     else {
