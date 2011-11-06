@@ -11,7 +11,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 
     QSettings s;
     ui->numEdit->setText(s.value("phone", "").toString());
-    ui->passedEdit->setText(s.value("passwd", "").toString());
+    ui->passwdEdit->setText(s.value("passwd", "").toString());
 
     connect(this, SIGNAL(accepted()),
             this, SLOT(saveSettings()));

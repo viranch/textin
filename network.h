@@ -12,7 +12,7 @@ public:
     void openUrl(QUrl url, QString data);
 
 signals:
-    void ready(QString);
+    void replyReady(QString);
 
 public slots:
     void readReply(QNetworkReply*);

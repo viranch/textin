@@ -24,7 +24,7 @@ void Network::readReply(QNetworkReply *reply)
 {
     QUrl redirect = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
     if (redirect.toString().isEmpty()) {
-        emit ready(QString(reply->readAll().data()));
+        emit replyReady(QString(reply->readAll().data()));
     } else {
         openUrl(redirect);
     }

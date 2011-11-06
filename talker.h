@@ -11,18 +11,18 @@ public:
     explicit Talker(QObject *parent = 0);
     void login(QString username, QString password);
     void sendText(QString recvr, QString text);
-    inline void setStatus(bool st) { m_status = st; }
-    inline bool status() { return m_status; }
+    inline bool isReady() { return m_ready; }
 
 signals:
     void loginFinished(bool);
     void sendFinished();
 
 public slots:
-    void readReply(QString);
+    void readLogin(QString);
+    void readSend(QString);
 
 private:
-    bool m_status;
+    bool m_ready;
     Network *m_manager;
 };
 

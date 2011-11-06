@@ -36,6 +36,7 @@ private:
     int m_curr;
 
     void firstrun();
+    void setupStatusBar();
     void login();
     void setEnabled(bool);
 };

@@ -10,14 +10,15 @@
 Talker::Talker(QObject *parent) :
     QObject(parent)
 {
-    m_status = false;
+    m_ready = false;
     m_manager = new Network(this);
     m_manager->setCookieJar(new QNetworkCookieJar(this));
-    connect(m_manager, SIGNAL(ready(QString)), this, SLOT(readReply(QString)));
 }
 
 void Talker::login(QString username, QString password)
 {
+    disconnect(m_manager, SIGNAL(replyReady(QString)), this, 0);
+    connect(m_manager, SIGNAL(replyReady(QString)), this, SLOT(readLogin(QString)));
     m_manager->openUrl(QString(LOGIN_URL), "username="+username+"&password="+password);
 }
 
@@ -26,13 +27,17 @@ void Talker::sendText(QString recvr, QString text)
     m_manager->openUrl(QString(SEND_URL), QString(SEND_DATA)+"&MobNo="+recvr+"&textArea="+text);
 }
 
-void Talker::readReply(QString data)
+void Talker::readLogin(QString data)
 {
-    if (!status()) {
-        m_status = data.contains("logout");
-        emit loginFinished(status());
+    m_ready = data.contains("logout");
+    emit loginFinished(m_ready);
+    if (m_ready) {
+        disconnect(m_manager, SIGNAL(replyReady(QString)), this, 0);
+        connect(m_manager, SIGNAL(replyReady(QString)), this, SLOT(readSend(QString)));
     }
-    else {
-        emit sendFinished();
-    }
+}
+
+void Talker::readSend(QString data)
+{
+    emit sendFinished();
 }

@@ -13,9 +13,6 @@ TextIn::TextIn(QWidget *parent) :
     ui->buttonBox->button(QDialogButtonBox::Cancel)->hide();
     ui->buttonBox->button(QDialogButtonBox::Ok)->setText("Send");
     ui->lenLabel->setText("0/"+QString::number(MAX_LEN));
-    m_bar = new QProgressBar(this);
-    m_bar->hide();
-    ui->statusBar->addPermanentWidget(m_bar);
 
     m_settingsDlg = new SettingsDialog(this);
     firstrun();
@@ -34,9 +31,16 @@ TextIn::~TextIn()
 void TextIn::firstrun()
 {
     QSettings s;
-    if (!s.contains("phone")) {
+    if (!s.contains("phone") || !s.contains("passwd")) {
         ui->actionSettings->trigger();
     }
+}
+
+void TextIn::setupStatusBar()
+{
+    m_bar = new QProgressBar(this);
+    m_bar->hide();
+    ui->statusBar->addPermanentWidget(m_bar);
 }
 
 void TextIn::login()
@@ -61,7 +65,6 @@ void TextIn::setEnabled(bool enabled)
 void TextIn::on_actionSettings_triggered()
 {
     if (m_settingsDlg->exec()) {
-        m_talker->setStatus(false);
         login();
     }
 }
@@ -81,7 +84,8 @@ void TextIn::loginDone(bool success)
 
 void TextIn::sendDone()
 {
-    m_bar->setValue(++m_curr);
+    if (m_receivers.size()>1)
+        m_bar->setValue(++m_curr);
     if (m_curr < m_receivers.size()) {
         m_talker->sendText(m_receivers[m_curr], ui->textEdit->toPlainText());
     } else {
@@ -95,6 +99,10 @@ void TextIn::sendDone()
 
 void TextIn::on_buttonBox_accepted()
 {
+    if (!m_talker->isReady()) {
+        login();
+        return;
+    }
     m_curr = 0;
     m_receivers.clear();
     m_receivers << ui->recvEdit->text().trimmed().split(',', QString::SkipEmptyParts);
@@ -111,10 +119,12 @@ void TextIn::on_buttonBox_accepted()
         m_receivers[i] = m_receivers.at(i).trimmed();
     }
     ui->statusBar->showMessage("Sending...");
-    m_bar->show();
 
-    m_bar->setMaximum(m_receivers.size());
-    m_bar->setValue(m_curr);
+    if (m_receivers.size()>1) {
+        m_bar->show();
+        m_bar->setMaximum(m_receivers.size());
+        m_bar->setValue(m_curr);
+    }
     m_talker->sendText(m_receivers[m_curr], ui->textEdit->toPlainText());
 }
 
