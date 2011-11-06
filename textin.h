@@ -34,6 +34,7 @@ private:
     QProgressBar *m_bar;
     QStringList m_receivers;
     int m_curr;
+    bool m_waitingToLogin;
 
     void firstrun();
     void setupStatusBar();

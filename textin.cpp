@@ -17,6 +17,7 @@ TextIn::TextIn(QWidget *parent) :
     m_settingsDlg = new SettingsDialog(this);
     firstrun();
 
+    m_waitingToLogin = false;
     m_talker = new Talker(this);
     connect(m_talker, SIGNAL(loginFinished(bool)), this, SLOT(loginDone(bool)));
     connect(m_talker, SIGNAL(sendFinished()), this, SLOT(sendDone()));
@@ -79,13 +80,18 @@ void TextIn::loginDone(bool success)
         setEnabled(true);
         ui->recvEdit->setFocus();
         ui->statusBar->showMessage("Ready.");
+        if (m_waitingToLogin) {
+            m_waitingToLogin = false;
+            on_buttonBox_accepted();
+        }
     }
 }
 
 void TextIn::sendDone()
 {
+    m_curr++;
     if (m_receivers.size()>1)
-        m_bar->setValue(++m_curr);
+        m_bar->setValue(m_curr);
     if (m_curr < m_receivers.size()) {
         m_talker->sendText(m_receivers[m_curr], ui->textEdit->toPlainText());
     } else {
@@ -101,6 +107,7 @@ void TextIn::on_buttonBox_accepted()
 {
     if (!m_talker->isReady()) {
         login();
+        m_waitingToLogin = true;
         return;
     }
     m_curr = 0;
