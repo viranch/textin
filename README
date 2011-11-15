@@ -1,0 +1,16 @@
+This is basic app that does not install itself.
+
+Download it:
+
+$ git clone git://github.com/viranch/textin.git
+
+or
+
+$ wget -q https://github.com/viranch/textin/tarball/master -O - | tar zxv
+
+Run it:
+
+$ cd path/to/textin
+$ qmake && make
+$ ./textin
+
