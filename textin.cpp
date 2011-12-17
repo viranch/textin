@@ -1,5 +1,6 @@
 #include <QSettings>
 #include <QPushButton>
+#include <QCompleter>
 #include "textin.h"
 #include "ui_textin.h"
 
@@ -80,6 +81,7 @@ void TextIn::loginDone(bool success)
         setEnabled(true);
         ui->recvEdit->setFocus();
         ui->statusBar->showMessage("Ready.");
+        setAutoComplete();
         if (m_waitingToLogin) {
             m_waitingToLogin = false;
             on_buttonBox_accepted();
@@ -89,7 +91,8 @@ void TextIn::loginDone(bool success)
 
 void TextIn::sendDone()
 {
-    m_curr++;
+    saveHistory(m_receivers[m_curr++]);
+    setAutoComplete();
     if (m_receivers.size()>1)
         m_bar->setValue(m_curr);
     if (m_curr < m_receivers.size()) {
@@ -155,4 +158,20 @@ void TextIn::on_textEdit_textChanged()
         ui->textEdit->moveCursor(QTextCursor::End);
     }
     ui->lenLabel->setText(QString::number(text.length())+"/"+QString::number(MAX_LEN));
+}
+
+void TextIn::saveHistory(QString num)
+{
+    QSettings s;
+    QStringList hist = s.value("history", QStringList()).toStringList();
+    hist.prepend(num);
+    hist.removeDuplicates();
+    s.setValue("history", hist);
+}
+
+void TextIn::setAutoComplete()
+{
+    QSettings s;
+    QStringList hist = s.value("history", QStringList()).toStringList();
+    ui->recvEdit->setCompleter(new QCompleter(hist, this));
 }

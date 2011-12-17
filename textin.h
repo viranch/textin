@@ -40,6 +40,8 @@ private:
     void setupStatusBar();
     void login();
     void setEnabled(bool);
+    void saveHistory(QString num);
+    void setAutoComplete();
 };
 
 #endif // TEXTIN_H
