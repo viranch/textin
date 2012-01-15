@@ -12,7 +12,7 @@ TextIn::TextIn(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->buttonBox->button(QDialogButtonBox::Cancel)->hide();
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setText("Send");
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setText("&Send");
     ui->lenLabel->setText("0/"+QString::number(MAX_LEN));
 
     m_settingsDlg = new SettingsDialog(this);
