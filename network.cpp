@@ -13,6 +13,7 @@ void Network::openUrl(QUrl url, QString data="")
 {
     QNetworkRequest r(url);
     r.setRawHeader("User-Agent", USER_AGENT);
+    r.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     if (data.isEmpty()) {
         get(r);
     } else {
